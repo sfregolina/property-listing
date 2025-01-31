@@ -4,12 +4,16 @@ import './PropertyListing.scss';
 
 const PropertyListing = () => {
     const [properties, setProperties] = useState([]);
+    const [loadingProperties, setLoadingProperties] = useState(false);
+    const [propertiesError, setPropertiesError] = useState(false);
 
-    const endpoint = `${import.meta.env.VITE_API_ENDPOINT_LOCAL}/properties`;
+    const endpoint = `${import.meta.env.VITE_API_BASE_URL_LOCAL}/properties`;
 
     useEffect(() => {
         const fetchProperties = async () => {
             try {
+                setLoadingProperties(true);
+
                 const response = await fetch(endpoint);
 
                 if (!response.ok) {
@@ -19,13 +23,23 @@ const PropertyListing = () => {
                 const data = await response.json();
 
                 setProperties(data);
-            } catch (e) {
-                console.log(e);
+            } catch {
+                setPropertiesError(true);
+            } finally {
+                setLoadingProperties(false);
             }
         };
 
         fetchProperties();
     }, [endpoint]);
+
+    if (propertiesError) {
+        return <p>Oops! There was an issue loading the properties!</p>;
+    }
+
+    if (loadingProperties) {
+        return <p>Loading properties...</p>;
+    }
 
     return (
         <ul className="PropertyListing">

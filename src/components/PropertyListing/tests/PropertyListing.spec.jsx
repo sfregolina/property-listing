@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved, waitFor } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import PropertyListing from '../PropertyListing';
 
@@ -30,11 +30,31 @@ describe('PropertyListing', () => {
         );
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it('should render ten property cards', async () => {
         render(<PropertyListing />);
+
+        await waitForElementToBeRemoved(screen.queryByText('Loading properties...'));
 
         const propertiesList = screen.getByRole('list');
         const propertyCards = await within(propertiesList).findAllByRole('listitem');
         expect(propertyCards).toHaveLength(10);
+    });
+
+    it('should render an error message if peroperties request fails', async () => {
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            ok: false,
+            status: 500,
+            json: () => Promise.resolve({ message: 'Internal Server Error' }),
+        });
+
+        render(<PropertyListing />);
+
+        await waitFor(() => {
+            expect(screen.getByText('Oops! There was an issue loading the properties!')).toBeInTheDocument();
+        });
     });
 });

@@ -13,11 +13,12 @@ const ImageAndPrice = ({ price, mainImage }) => {
     );
 };
 
-const PropertyDetails = ({ propertyTitle, displayAddress, branchName, url, summary }) => {
+const PropertyDetails = ({ propertyTitle, bedrooms, displayAddress, branchName, url, summary }) => {
     return (
         <div className="PropertyDetails">
             <a href={url}>
                 <h1 className="propertyTitle">{propertyTitle}</h1>
+                <p>Beds: {bedrooms}</p>
                 <p className="displayAddress">{displayAddress}</p>
                 <p className="summary">{summary}</p>
             </a>
@@ -33,12 +34,22 @@ const PropertyDetails = ({ propertyTitle, displayAddress, branchName, url, summa
     );
 };
 
-const PropertyCard = ({ price, mainImage, propertyTitle, displayAddress, branchName, propertyUrl, summary }) => {
+const PropertyCard = ({
+    price,
+    mainImage,
+    propertyTitle,
+    bedrooms,
+    displayAddress,
+    branchName,
+    propertyUrl,
+    summary,
+}) => {
     return (
         <div className="PropertyCard">
             <ImageAndPrice price={price} mainImage={mainImage} />
             <PropertyDetails
                 propertyTitle={propertyTitle}
+                bedrooms={bedrooms}
                 summary={summary}
                 displayAddress={displayAddress}
                 branchName={branchName}
@@ -65,10 +76,25 @@ PropertyCard.propTypes = {
         'Maisonette',
     ]),
     price: PropTypes.number,
+    bedrooms: PropTypes.number,
     branchName: PropTypes.string,
     propertyUrl: PropTypes.string,
     contactUrl: PropTypes.string,
     propertyTitle: PropTypes.string,
+    mainImage: PropTypes.string,
+};
+
+PropertyDetails.propTypes = {
+    propertyTitle: PropTypes.string,
+    bedrooms: PropTypes.number,
+    displayAddress: PropTypes.string,
+    branchName: PropTypes.string,
+    url: PropTypes.string,
+    summary: PropTypes.string,
+};
+
+ImageAndPrice.propTypes = {
+    price: PropTypes.number,
     mainImage: PropTypes.string,
 };
 

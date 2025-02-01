@@ -7,6 +7,7 @@ describe('PropertyCard', () => {
         summary: 'Superbly insulated, energy efficient, secure and virtually invisible',
         displayAddress: 'North Shire, TS13 4TJ',
         price: 500,
+        bedrooms: 2,
         branchName: '[branch/agent name]',
         propertyTitle: '2 Bed Hobbit Hole For Sale',
         mainImage: 'something.com/61AG4UpUoPL._SX300_QL70_.jpg',
@@ -16,6 +17,11 @@ describe('PropertyCard', () => {
         render(<PropertyCard {...props} />);
         const image = screen.getByAltText('Property');
         expect(image.src).toContain('61AG4UpUoPL._SX300_QL70_.jpg');
+    });
+
+    it('should render property bedrooms', () => {
+        render(<PropertyCard {...props} />);
+        expect(screen.getByText('Beds: 2')).toBeInTheDocument();
     });
 
     it('should render property price', () => {

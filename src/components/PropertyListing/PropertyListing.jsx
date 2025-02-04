@@ -1,32 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropertyCard from '../PropertyCard';
 import './PropertyListing.scss';
 
-const DUMMY_PROPERTY = {
-    id: 73864112,
-    bedrooms: 3,
-    summary: 'Property 1 Situated moments from the River Thames in Old Chelsea...',
-    displayAddress: '1 CHEYNE WALK, CHELSEA, SW3',
-    propertyType: 'Flat',
-    price: 1950000,
-    branchName: 'M2 Property, London',
-    propertyUrl: '/property-for-sale/property-73864112.html',
-    contactUrl: '/property-for-sale/contactBranch.html?propertyId=73864112',
-    propertyTitle: '3 bedroom flat for sale',
-    mainImage:
-        'https://media.rightmove.co.uk/dir/crop/10:9-16:9/38k/37655/53588679/37655_CAM170036_IMG_01_0000_max_476x317.jpg',
-};
-
 const PropertyListing = () => {
+    const [properties, setProperties] = useState([]);
+    const [loadingProperties, setLoadingProperties] = useState(false);
+    const [propertiesError, setPropertiesError] = useState(false);
+
+    const endpoint = `${import.meta.env.VITE_API_BASE_URL_LOCAL}/properties`;
+
+    useEffect(() => {
+        const fetchProperties = async () => {
+            try {
+                setLoadingProperties(true);
+
+                const response = await fetch(endpoint);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                setProperties(data);
+            } catch {
+                setPropertiesError(true);
+            } finally {
+                setLoadingProperties(false);
+            }
+        };
+
+        fetchProperties();
+    }, [endpoint]);
+
+    if (propertiesError) {
+        return <p>Oops! There was an issue loading the properties!</p>;
+    }
+
+    if (loadingProperties) {
+        return <p>Loading properties...</p>;
+    }
+
+    if (!properties.length) {
+        return <p>There are no available properties.</p>;
+    }
+
     return (
         <ul className="PropertyListing">
-            {Array(5)
-                .fill(DUMMY_PROPERTY)
-                .map((property, index) => (
-                    <li key={index}>
-                        <PropertyCard {...property} />
-                    </li>
-                ))}
+            {properties.map((property, index) => (
+                <li key={index}>
+                    <PropertyCard {...property} />
+                </li>
+            ))}
         </ul>
     );
 };

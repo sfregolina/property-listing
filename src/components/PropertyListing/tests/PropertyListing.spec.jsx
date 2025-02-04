@@ -57,4 +57,17 @@ describe('PropertyListing', () => {
             expect(screen.getByText('Oops! There was an issue loading the properties!')).toBeInTheDocument();
         });
     });
+
+    it('should render a message if no properties are available', async () => {
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            ok: true,
+            json: () => Promise.resolve([]),
+        });
+
+        render(<PropertyListing />);
+
+        await waitFor(() => {
+            expect(screen.getByText('There are no available properties.')).toBeInTheDocument();
+        });
+    });
 });

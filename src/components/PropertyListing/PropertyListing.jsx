@@ -41,6 +41,10 @@ const PropertyListing = () => {
         return <p>Loading properties...</p>;
     }
 
+    if (!properties.length) {
+        return <p>There are no available properties.</p>;
+    }
+
     return (
         <ul className="PropertyListing">
             {properties.map((property, index) => (
